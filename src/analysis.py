@@ -399,3 +399,59 @@ def generate_summary_report(df: pd.DataFrame) -> dict:
         print(f"Warning: Could not calculate country breakdown: {e}")
     
     return report
+
+def calculate_rfm(df, reference_date=None):
+    """
+    Calculate RFM (Recency, Frequency, Monetary) metrics for customers.
+    """
+    if reference_date is None:
+        reference_date = df["InvoiceDate"].max()
+
+    rfm = (
+        df.groupby("CustomerID")
+        .agg({
+            "InvoiceDate": lambda x: (reference_date - x.max()).days,
+            "InvoiceNo": "nunique",
+            "Revenue": "sum"
+        })
+        .reset_index()
+    )
+
+    rfm.columns = ["CustomerID", "Recency", "Frequency", "Monetary"]
+
+    return rfm
+
+def add_rfm_segments(rfm_df):
+    """
+    Assign RFM scores and customer segments.
+    """
+    rfm = rfm_df.copy()
+
+    rfm["R_Score"] = pd.qcut(rfm["Recency"], 4, labels=[4, 3, 2, 1])
+    rfm["F_Score"] = pd.qcut(
+        rfm["Frequency"].rank(method="first"),
+        4,
+        labels=[1, 2, 3, 4]
+    )
+    rfm["M_Score"] = pd.qcut(rfm["Monetary"], 4, labels=[1, 2, 3, 4])
+
+    rfm["RFM_Score"] = (
+        rfm["R_Score"].astype(str)
+        + rfm["F_Score"].astype(str)
+        + rfm["M_Score"].astype(str)
+    )
+
+    def segment(row):
+        if row["RFM_Score"] in ["444", "443", "434"]:
+            return "Champions"
+        elif row["F_Score"] == 4:
+            return "Loyal"
+        elif row["R_Score"] == 1:
+            return "At Risk"
+        else:
+            return "Others"
+
+    rfm["Segment"] = rfm.apply(segment, axis=1)
+
+    return rfm
+

@@ -16,6 +16,7 @@ A production-ready customer analytics project that transforms raw e-commerce tra
 - [Project Structure](#-project-structure)
 - [Getting Started](#-getting-started)
 - [Usage](#-usage)
+- [Deploy to Streamlit Community Cloud](#-deploy-to-streamlit-community-cloud)
 - [Features](#-features)
 - [Future Improvements](#-future-improvements)
 
@@ -46,13 +47,13 @@ This project provides an end-to-end analytics solution that:
 
 ## 🛠️ Tech Stack
 
-| Category | Technology |
-|----------|------------|
-| **Language** | Python 3.9+ |
-| **Data Processing** | Pandas, NumPy |
-| **Visualization** | Plotly, Matplotlib |
-| **Dashboard** | Streamlit |
-| **Notebook** | Jupyter |
+| Category            | Technology         |
+| ------------------- | ------------------ |
+| **Language**        | Python 3.9+        |
+| **Data Processing** | Pandas, NumPy      |
+| **Visualization**   | Plotly, Matplotlib |
+| **Dashboard**       | Streamlit          |
+| **Notebook**        | Jupyter            |
 
 ---
 
@@ -96,32 +97,36 @@ customer-insights-analytics/
 ### Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/yourusername/customer-insights-analytics.git
    cd customer-insights-analytics
    ```
 
 2. **Create a virtual environment** (recommended)
+
    ```bash
    python -m venv venv
-   
+
    # Windows
    venv\Scripts\activate
-   
+
    # macOS/Linux
    source venv/bin/activate
    ```
 
 3. **Install dependencies**
+
    ```bash
    pip install -r requirements.txt
    ```
 
 4. **Add your data**
-   
+
    Place your e-commerce CSV file in `data/raw/ecommerce_data.csv`
-   
+
    Expected columns:
+
    - `InvoiceNo` - Unique transaction identifier
    - `StockCode` - Product code
    - `Description` - Product description
@@ -142,6 +147,7 @@ jupyter notebook notebooks/01_data_exploration.ipynb
 ```
 
 This notebook provides:
+
 - Dataset overview and structure
 - Missing values analysis
 - Statistical summaries
@@ -190,9 +196,48 @@ The dashboard will open in your browser at `http://localhost:8501`
 
 ---
 
+## ☁ Deploy to Streamlit Community Cloud
+
+### 1. Push this project to GitHub
+
+Make sure these files are in your repository:
+
+- `app/app.py`
+- `requirements.txt`
+- `runtime.txt`
+- `data/processed/cleaned_data.csv`
+
+> Note: `data/raw/` remains ignored, but `data/processed/` is now allowed so the dashboard can load data in cloud.
+
+### 2. Create the app in Streamlit Community Cloud
+
+1. Go to [https://share.streamlit.io](https://share.streamlit.io)
+2. Click **New app**
+3. Select your GitHub repository and branch
+4. Set **Main file path** to:
+
+```text
+app/app.py
+```
+
+5. Click **Deploy**
+
+### 3. Verify after deploy
+
+- App opens without "Processed data not found" warning
+- KPIs and charts load correctly
+- URL format will be:
+
+```text
+https://<your-app-name>.streamlit.app
+```
+
+---
+
 ## ✨ Features
 
 ### Data Cleaning Module (`src/data_cleaning.py`)
+
 - Handle missing values with configurable strategies
 - Convert date columns to proper datetime format
 - Remove invalid records (returns, zero prices)
@@ -200,6 +245,7 @@ The dashboard will open in your browser at `http://localhost:8501`
 - Complete cleaning pipeline for automation
 
 ### Analysis Module (`src/analysis.py`)
+
 - Calculate revenue KPIs (total, AOV, per customer)
 - Monthly sales trend analysis
 - Top customers by monetary value
@@ -208,6 +254,7 @@ The dashboard will open in your browser at `http://localhost:8501`
 - Customer value segmentation
 
 ### Interactive Dashboard (`app/app.py`)
+
 - Real-time KPI metrics cards
 - Revenue trend visualization
 - Orders and customers trend chart
@@ -254,4 +301,4 @@ For questions or feedback, please open an issue in this repository.
 
 ---
 
-*Built with ❤️ for data-driven decision making*
+_Built with ❤️ for data-driven decision making_

@@ -28,6 +28,11 @@ def load_data(filepath: str, encoding: str = 'ISO-8859-1') -> pd.DataFrame:
         FileNotFoundError: If the specified file does not exist
     """
     df = pd.read_csv(filepath, encoding=encoding)
+    df.columns = (
+    df.columns
+    .str.replace("ï»¿", "", regex=False)
+    .str.strip()
+)
     print(f"Loaded {len(df):,} records from {filepath}")
     return df
 
